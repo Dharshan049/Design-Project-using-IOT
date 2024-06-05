@@ -1,0 +1,26 @@
+void takePhoto() {
+  digitalWrite(LED, HIGH);
+  delay(200);
+
+  camera_fb_t *fb = NULL;
+  fb = esp_camera_fb_get();
+  if (!fb) {
+    Serial.println("Camera capture failed");
+    return;
+  }
+
+  // Save the image to a file on your Windows machine
+  String fileName = "C:\\Path\\To\\Your\\Folder\\captured_image.jpg"; // Replace with the desired file path
+  File file = SD.open(fileName, FILE_WRITE);
+  if (file) {
+    file.write(fb->buf, fb->len);
+    file.close();
+    Serial.println("Image saved to file: " + fileName);
+  } else {
+    Serial.println("Error opening file for writing");
+  }
+
+  esp_camera_fb_return(fb);
+
+  digitalWrite(LED, LOW);
+}
